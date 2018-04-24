@@ -1,7 +1,9 @@
 package assignment7;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 
 class Mapper implements Runnable {
@@ -22,23 +24,25 @@ class Mapper implements Runnable {
     public void run() {
         ArrayList<String> convertedDoc = new ArrayList<>();
         try {
-            Scanner inFile = new Scanner(file);
+            Scanner inFile = new Scanner(new BufferedReader(new FileReader(file)));
             while(inFile.hasNextLine()){
                 String s = inFile.nextLine();
-                s = s.replaceAll("^a-zA-Z0=9", " ").toLowerCase();
-                String[] words = s.split("\\s+");
+                if(s.equals(""))
+                    continue;
+                String[] words;
+                words = s.replaceAll("[^a-zA-Z0-9 ]", "").toLowerCase().split("\\s+");
                 convertedDoc.addAll(Arrays.asList(words));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        for(int i = 0; i < convertedDoc.size() - size; i++){
-            String phrase = (String) convertedDoc.subList(i, i + size).toString();
+        for(int i = 0; i < convertedDoc.size() - this.size; i++){
+            String phrase = convertedDoc.subList(i, i + this.size).toString();
             Integer n = map.get(phrase);
             n = (n == null) ? 1 : (n + 1);
             map.put(phrase, n);
         }
-        System.out.println("Finished");
+        //System.out.println("Finished");
     }
 }

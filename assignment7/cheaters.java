@@ -35,5 +35,10 @@ public class cheaters {
                 e.printStackTrace();
             }
         }
+        for(Mapper m : MapList){
+            System.out.println(m.name + " " + m.map.size());
+        }
+        //System.out.println(MapList[0].map.toString());
+
     }
 }

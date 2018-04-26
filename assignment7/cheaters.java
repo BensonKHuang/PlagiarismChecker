@@ -11,6 +11,8 @@ public class cheaters {
     protected static Hashtable<File, Integer> DocEncoding;
     private static Map<Integer, Pair> treeMap;
     private static File[] list;
+    private static final int THREADCOUNT = 5;
+    private static int len;
 
     public static void main(String [] args){
 
@@ -18,17 +20,22 @@ public class cheaters {
         int phraseSize = Integer.parseInt(args[1]);
         File files = new File(fileName);
         list = files.listFiles();
+        len = (int) Math.ceil(1.0 * list.length/THREADCOUNT);
 
-        ThreadList = new Thread[list.length];
-        MapList = new FileMap[list.length];
+        ThreadList = new Thread[THREADCOUNT];
+        MapList = new FileMap[THREADCOUNT];
         plagiarismGrid = new Integer[list.length][list.length];
         DocEncoding = new Hashtable<>();
         treeMap = new TreeMap(Collections.reverseOrder());
 
+        long startTime = System.nanoTime();
         initializeGrid();
         createDictionary();
         createMap(phraseSize);
         getResults();
+        long endTime = System.nanoTime();
+        double duration = (double)(endTime - startTime) /1000000000.0;
+        System.out.println(THREADCOUNT + " threads: " + duration + " seconds");
         printOutResults();
     }
 
@@ -47,8 +54,8 @@ public class cheaters {
     }
 
     private static void createMap(int size){
-        for(int i = 0; i < list.length; i++){
-            MapList[i] = new FileMap(list[i], size);
+        for(int i = 0; i < THREADCOUNT; i++){
+            MapList[i] = new FileMap(list, i*len, (i+1)*len, size);
             ThreadList[i] = new Thread(MapList[i]);
             ThreadList[i].start();
         }

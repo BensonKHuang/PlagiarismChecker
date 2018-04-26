@@ -1,18 +1,20 @@
 package assignment7;
 
+import java.io.File;
+
 public class Pair {
 
-    public Mapper map1;
-    public Mapper map2;
+    public File f1;
+    public File f2;
 
-    public Pair(Mapper map1, Mapper map2){
-        this.map1 = map1;
-        this.map2 = map2;
+    public Pair(File f1, File f2){
+        this.f1 = f1;
+        this.f2 = f2;
     }
 
     @Override
     public String toString() {
-        return (map1.name + " " + map2.name);
+        return (f1.getName().replaceAll(".txt", "") + " " + f2.getName().replaceAll(".txt", ""));
     }
 
 }

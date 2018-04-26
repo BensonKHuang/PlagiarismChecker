@@ -6,33 +6,49 @@ import java.util.*;
 public class cheaters {
 
     private static Thread[] ThreadList;
-    private static Mapper[] MapList;
-    private static int[][] plagiarismGrid;
+    private static FileMap[] MapList;
+    protected static Integer[][] plagiarismGrid;
+    protected static Hashtable<File, Integer> DocEncoding;
     private static Map<Integer, Pair> treeMap;
+    private static File[] list;
+
     public static void main(String [] args){
 
         String fileName = args[0];
         int phraseSize = Integer.parseInt(args[1]);
         File files = new File(fileName);
-        File[] list = files.listFiles();
+        list = files.listFiles();
 
         ThreadList = new Thread[list.length];
-        MapList = new Mapper[list.length];
-        plagiarismGrid = new int[list.length][list.length];
+        MapList = new FileMap[list.length];
+        plagiarismGrid = new Integer[list.length][list.length];
+        DocEncoding = new Hashtable<>();
         treeMap = new TreeMap(Collections.reverseOrder());
-        System.out.println("Creating Maps...");
-        createMaps(list, phraseSize);
-        System.out.println("Comparing Maps...");
-        compareMaps();
-        System.out.println("Getting Results...");
+
+        initializeGrid();
+        createDictionary();
+        createMap(phraseSize);
         getResults();
-        System.out.println("Printing Results...");
         printOutResults();
     }
 
-    private static void createMaps(File[] list, int size){
+    private static void initializeGrid(){
+        int size = plagiarismGrid.length;
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                plagiarismGrid[i][j] = 0;
+            }
+        }
+    }
+    private static void createDictionary(){
+        for(int i = 0; i < list.length; i++ ){
+            DocEncoding.put(list[i], i);
+        }
+    }
+
+    private static void createMap(int size){
         for(int i = 0; i < list.length; i++){
-            MapList[i] = new Mapper(list[i], size);
+            MapList[i] = new FileMap(list[i], size);
             ThreadList[i] = new Thread(MapList[i]);
             ThreadList[i].start();
         }
@@ -45,24 +61,16 @@ public class cheaters {
         }
     }
 
-    private static void compareMaps(){
-        for(int i = 0; i < MapList.length - 1; i++){
-            for(int j = i + 1; j < MapList.length; j ++){
-                Set<String> intersection = new HashSet<>(MapList[i].phrases);
-                intersection.retainAll(MapList[j].phrases);
-                plagiarismGrid[i][j] = intersection.size();
-            }
-        }
-    }
-
     private static void getResults(){
         Map<Integer, Pair> unsortedMap = new HashMap<>();
-        for(int i = 0; i < MapList.length - 1; i++){
-            for(int j = i + 1; j < MapList.length; j++){
-                if(plagiarismGrid[i][j] < 2){
+        for(int i = 0; i < list.length - 1; i++){
+            for(int j = i + 1; j < list.length; j++){
+                int collisions = plagiarismGrid[DocEncoding.get(list[i])][DocEncoding.get(list[j])] + plagiarismGrid[DocEncoding.get(list[j])][DocEncoding.get(list[i])];
+
+                if(collisions < 100){
                     continue;
                 }
-                unsortedMap.put(plagiarismGrid[i][j], new Pair(MapList[i], MapList[j]));
+                unsortedMap.put(collisions, new Pair(list[i], list[j]));
             }
         }
         treeMap.putAll(unsortedMap);

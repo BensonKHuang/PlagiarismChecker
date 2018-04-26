@@ -8,13 +8,15 @@ import java.util.*;
 
 class Mapper implements Runnable {
 
-    public Map<String, Integer> map;
+    //public Map<String, Integer> map;
+    public Set<String> phrases;
     public File file;
     public String name;
     private int size;
 
     public Mapper(File file, int size){
-        this.map = new HashMap<>();
+        //this.map = new HashMap<>();
+        this.phrases = new HashSet<>();
         this.file = file;
         this.name = file.getName().replaceAll(".txt", "");
         this.size = size;
@@ -39,10 +41,10 @@ class Mapper implements Runnable {
 
         for(int i = 0; i < convertedDoc.size() - this.size; i++){
             String phrase = convertedDoc.subList(i, i + this.size).toString();
-            Integer n = map.get(phrase);
-            n = (n == null) ? 1 : (n + 1);
-            map.put(phrase, n);
+            //Integer n = map.get(phrase);
+            //n = (n == null) ? 1 : (n + 1);
+            //map.put(phrase, n);
+            phrases.add(phrase);
         }
-        //System.out.println("Finished");
     }
 }

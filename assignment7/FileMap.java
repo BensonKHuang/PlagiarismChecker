@@ -1,3 +1,13 @@
+/* Cheaters! <FileMap.java>
+ * EE422C Project 7 submission by
+ * Benson Huang
+ * bkh642
+ * Nimay Kumar
+ * nrk472
+ * Slip days used: <0>
+ * Spring 2018
+ */
+
 package assignment7;
 
 import java.io.BufferedReader;
@@ -13,7 +23,7 @@ import static assignment7.cheaters.plagiarismGrid;
 
 class FileMap implements Runnable {
 
-    private static ConcurrentHashMap<String, HashSet<File>> map = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, List<File>> map = new ConcurrentHashMap<>();
     private File[] list;
     private int size;
     private int start;
@@ -57,19 +67,23 @@ class FileMap implements Runnable {
             if(map.get(phrase).contains(f)){
                 return;
             }
-            updateGrid(phrase, f);
             map.get(phrase).add(f);
         }
         else{
-            map.put(phrase, new HashSet<File>());
-            map.get(phrase).add(f);
+                List<File> fileSet = new ArrayList<>();
+                fileSet.add(f);
+                map.put(phrase, fileSet);
         }
     }
 
-    private static void updateGrid(String phrase, File f){
-        for(File found : map.get(phrase)){
-            synchronized (plagiarismGrid[DocEncoding.get(f)][DocEncoding.get(found)]){
-                plagiarismGrid[DocEncoding.get(f)][DocEncoding.get(found)]++;
+    public static void updateGrid(){
+
+        for(HashMap.Entry<String, List<File>> entry : map.entrySet()){
+            List<File> files = entry.getValue();
+            for(int i = 0; i < files.size() - 1; i++){
+                for(int j = i + 1; j < files.size(); j++){
+                    plagiarismGrid[DocEncoding.get(files.get(i))][DocEncoding.get(files.get(j))]++;
+                }
             }
         }
     }

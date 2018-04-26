@@ -1,3 +1,13 @@
+/* Cheaters! <cheaters.java>
+ * EE422C Project 7 submission by
+ * Benson Huang
+ * bkh642
+ * Nimay Kumar
+ * nrk472
+ * Slip days used: <0>
+ * Spring 2018
+ */
+
 package assignment7;
 
 import java.io.File;
@@ -7,32 +17,37 @@ public class cheaters {
 
     private static Thread[] ThreadList;
     private static FileMap[] MapList;
-    protected static Integer[][] plagiarismGrid;
+    protected static int[][] plagiarismGrid;
     protected static Hashtable<File, Integer> DocEncoding;
     private static Map<Integer, Pair> treeMap;
+
+    private static int len;
     private static File[] list;
     private static final int THREADCOUNT = 5;
-    private static int len;
 
     public static void main(String [] args){
 
+
         String fileName = args[0];
         int phraseSize = Integer.parseInt(args[1]);
+        int threshHold = Integer.parseInt(args[2]);
+
         File files = new File(fileName);
         list = files.listFiles();
-        len = (int) Math.ceil(1.0 * list.length/THREADCOUNT);
 
+        len = (int) Math.ceil(1.0 * list.length/THREADCOUNT);
         ThreadList = new Thread[THREADCOUNT];
         MapList = new FileMap[THREADCOUNT];
-        plagiarismGrid = new Integer[list.length][list.length];
+        plagiarismGrid = new int[list.length][list.length];
         DocEncoding = new Hashtable<>();
         treeMap = new TreeMap(Collections.reverseOrder());
 
         long startTime = System.nanoTime();
-        initializeGrid();
         createDictionary();
         createMap(phraseSize);
-        getResults();
+        FileMap.updateGrid();
+        getResults(threshHold);
+
         long endTime = System.nanoTime();
         double duration = (double)(endTime - startTime) /1000000000.0;
         System.out.println(THREADCOUNT + " threads: " + duration + " seconds");
@@ -68,13 +83,13 @@ public class cheaters {
         }
     }
 
-    private static void getResults(){
+    private static void getResults(int threshHold){
         Map<Integer, Pair> unsortedMap = new HashMap<>();
         for(int i = 0; i < list.length - 1; i++){
             for(int j = i + 1; j < list.length; j++){
                 int collisions = plagiarismGrid[DocEncoding.get(list[i])][DocEncoding.get(list[j])] + plagiarismGrid[DocEncoding.get(list[j])][DocEncoding.get(list[i])];
 
-                if(collisions < 100){
+                if(collisions <= threshHold){
                     continue;
                 }
                 unsortedMap.put(collisions, new Pair(list[i], list[j]));

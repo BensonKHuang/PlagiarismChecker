@@ -1,3 +1,13 @@
+/* Cheaters! <Pair.java>
+ * EE422C Project 7 submission by
+ * Benson Huang
+ * bkh642
+ * Nimay Kumar
+ * nrk472
+ * Slip days used: <0>
+ * Spring 2018
+ */
+
 package assignment7;
 
 import java.io.File;

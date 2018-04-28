@@ -29,6 +29,13 @@ class FileMap implements Runnable {
     private int start;
     private int end;
 
+    /**
+     * Creates a new FileMap object
+     * @param list array of files
+     * @param start
+     * @param end
+     * @param size
+     */
     public FileMap(File[] list, int start, int end, int size){
 
         this.start = start;
@@ -63,25 +70,30 @@ class FileMap implements Runnable {
     }
 
     private static void addPhrase(String phrase, File f){
+
         if(map.containsKey(phrase)){
+
             if(map.get(phrase).contains(f)){
                 return;
             }
             map.get(phrase).add(f);
         }
         else{
-                List<File> fileSet = new ArrayList<>();
-                fileSet.add(f);
-                map.put(phrase, fileSet);
+            List<File> fileSet = new ArrayList<>();
+            fileSet.add(f);
+            map.put(phrase, fileSet);
         }
     }
 
     public static void updateGrid(){
 
         for(HashMap.Entry<String, List<File>> entry : map.entrySet()){
+
             List<File> files = entry.getValue();
             for(int i = 0; i < files.size() - 1; i++){
+
                 for(int j = i + 1; j < files.size(); j++){
+
                     plagiarismGrid[DocEncoding.get(files.get(i))][DocEncoding.get(files.get(j))]++;
                 }
             }

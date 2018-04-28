@@ -27,7 +27,6 @@ public class cheaters {
 
     public static void main(String [] args){
 
-
         String fileName = args[0];
         int phraseSize = Integer.parseInt(args[1]);
         int threshHold = Integer.parseInt(args[2]);
@@ -55,51 +54,83 @@ public class cheaters {
     }
 
     private static void initializeGrid(){
+
         int size = plagiarismGrid.length;
         for(int i = 0; i < size; i++){
+
             for(int j = 0; j < size; j++){
+
                 plagiarismGrid[i][j] = 0;
             }
         }
     }
+
+    /**
+     * Creates dictionary
+     */
     private static void createDictionary(){
+
         for(int i = 0; i < list.length; i++ ){
+
             DocEncoding.put(list[i], i);
         }
     }
 
+    /**
+     * Creates and starts THREADCOUNT new threads running FileMaps
+     * @param size Filemap size
+     */
     private static void createMap(int size){
+
         for(int i = 0; i < THREADCOUNT; i++){
+
             MapList[i] = new FileMap(list, i*len, (i+1)*len, size);
             ThreadList[i] = new Thread(MapList[i]);
             ThreadList[i].start();
         }
         for(Thread t : ThreadList){
+
             try {
                 t.join();
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    /**
+     * Puts all new collisions into treeMap
+     * @param threshHold minimum number of similarities
+     */
     private static void getResults(int threshHold){
+
         Map<Integer, Pair> unsortedMap = new HashMap<>();
+
         for(int i = 0; i < list.length - 1; i++){
+
             for(int j = i + 1; j < list.length; j++){
+
                 int collisions = plagiarismGrid[DocEncoding.get(list[i])][DocEncoding.get(list[j])] + plagiarismGrid[DocEncoding.get(list[j])][DocEncoding.get(list[i])];
 
                 if(collisions <= threshHold){
+
                     continue;
                 }
+
                 unsortedMap.put(collisions, new Pair(list[i], list[j]));
             }
         }
         treeMap.putAll(unsortedMap);
     }
 
+    /**
+     * Prints out results
+     */
     private static void printOutResults(){
+
         for(Map.Entry<Integer, Pair> entry : treeMap.entrySet()){
+
             System.out.println(entry.getKey() + " " + entry.getValue().toString());
         }
     }

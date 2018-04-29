@@ -44,6 +44,9 @@ class FileMap implements Runnable {
         this.size = size;
     }
 
+    /**
+     * Parses document for phrases, cleans up phrases for processing
+     */
     @Override
     public void run() {
         for(int i = start; i < end; i++){
@@ -69,6 +72,11 @@ class FileMap implements Runnable {
         }
     }
 
+    /**
+     * Adds a phrase to map, maps it to list of files containing it
+     * @param phrase phrase
+     * @param f File containing phrase
+     */
     private static void addPhrase(String phrase, File f){
 
         if(map.containsKey(phrase)){
@@ -85,6 +93,9 @@ class FileMap implements Runnable {
         }
     }
 
+    /**
+     * updates the grid of overlapping phrases
+     */
     public static void updateGrid(){
 
         for(HashMap.Entry<String, List<File>> entry : map.entrySet()){

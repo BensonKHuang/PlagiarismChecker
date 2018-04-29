@@ -131,7 +131,7 @@ public class cheaters {
 
         for(Map.Entry<Integer, Pair> entry : treeMap.entrySet()){
 
-            System.out.println(entry.getKey() + " " + entry.getValue().toString());
+            System.out.println(entry.getKey() + ": " + entry.getValue().get1().toString() + ", " + entry.getValue().get2().toString());
         }
     }
 }

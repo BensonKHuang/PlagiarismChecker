@@ -55,7 +55,7 @@ public class Graph extends JComponent {
 
     public void paintComponent(Graphics g){
 
-        
+
     }
 
 

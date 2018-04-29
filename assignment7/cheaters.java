@@ -19,7 +19,7 @@ public class cheaters {
     private static FileMap[] MapList;
     protected static int[][] plagiarismGrid;
     protected static Hashtable<File, Integer> DocEncoding;
-    private static Map<Integer, Pair> treeMap;
+    protected static Map<Integer, Pair> treeMap;
 
     private static int len;
     private static File[] list;

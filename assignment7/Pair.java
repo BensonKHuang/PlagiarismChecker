@@ -27,4 +27,11 @@ public class Pair {
         return (f1.getName().replaceAll(".txt", "") + " " + f2.getName().replaceAll(".txt", ""));
     }
 
+    public File get1(){
+        return f1;
+    }
+
+    public File get2(){
+        return f2;
+    }
 }
